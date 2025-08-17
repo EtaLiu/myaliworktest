@@ -44,7 +44,7 @@ public class FaasEntry extends AbstractEntry {
 		//业务传的实际入参(如果您配置了参数映射(也就是点击了连接器工厂里的解析Body按钮并配置了各个参数描述和映射), 那么就是业务实际参数经过参数映射处理后的值)
 		Map<String,Object> input = faasInputs.getInputs();
 	
-		DESUtil desUtil = new DESUtil();
+		//DESUtil desUtil = new DESUtil();
 		//加解密业务逻辑	
 		String content = (String)input.get("content");
 		String password = (String)input.get("password");
@@ -60,7 +60,7 @@ public class FaasEntry extends AbstractEntry {
 		/**
 		* 加密
 		*/
-		String encryptContent = desUtil.encrypt(content, password);
+		String encryptContent = DESUtil.encrypt(content, password);
 		System.out.println("加密后的字符串:" + encryptContent);
 		if (StringUtils.isEmpty(encryptContent)) {
 		result.put("error", "empty string got!");
@@ -73,7 +73,7 @@ public class FaasEntry extends AbstractEntry {
 		/**
 		* 解密
 		*/
-		String encryptContent = desUtil.decrypt(content, password);
+		String encryptContent = DESUtil.decrypt(content, password);
 		System.out.println("解密后的字符串:" + encryptContent);
 		if (StringUtils.isEmpty(encryptContent)) {
 		result.put("error", "empty string got!");
