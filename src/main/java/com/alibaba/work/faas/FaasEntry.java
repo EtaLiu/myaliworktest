@@ -44,63 +44,24 @@ public class FaasEntry extends AbstractEntry {
 		//业务传的实际入参(如果您配置了参数映射(也就是点击了连接器工厂里的解析Body按钮并配置了各个参数描述和映射), 那么就是业务实际参数经过参数映射处理后的值)
 		Map<String,Object> input = faasInputs.getInputs();
 	
-		//DESUtil desUtil = new DESUtil();
-		//加解密业务逻辑	
-		String content = (String)input.get("content");
-		String password = (String)input.get("password");
-		Integer type = Integer.parseInt(String.valueOf(input.get("type")));
-		/**
-		*在这里编写您的业务代码, 也可以将业务代码封装到其他类或方法里.
-		*/
-		JSONObject result = new JSONObject();
-		result.put("success",false);
-		result.put("result","");
-		result.put("error","");
-		if (0 == type) {
-		/**
-		* 加密
-		*/
-		String encryptContent = DESUtil.encrypt(content, password);
-		System.out.println("加密后的字符串:" + encryptContent);
-		if (StringUtils.isEmpty(encryptContent)) {
-		result.put("error", "empty string got!");
-		return result;
-		}
-		result.put("result", encryptContent);
-		result.put("success", true);
-		}
-		else {
-		/**
-		* 解密
-		*/
-		String encryptContent = DESUtil.decrypt(content, password);
-		System.out.println("解密后的字符串:" + encryptContent);
-		if (StringUtils.isEmpty(encryptContent)) {
-		result.put("error", "empty string got!");
-		return result;
-		}
-		result.put("result", encryptContent);
-		result.put("success", true);
-		}
-		System.out.println("返回:" + JSON.toJSONString(result));
-		return result;
+
 		
 		/**
 		 * 示例1, 在doYourBusiness方法里编写您的业务代码, 也可以将业务代码封装到其他Class源文件或方法里, cloudIDE和您的本地IDE基本无区别。
 		 */
-		// JSONObject result = new JSONObject();
-		// try {
-		//    Object businessResult = doYourBusiness(input);
-		//    result.put("success",true);
-		//    result.put("result",businessResult);
-		//    result.put("error","");
-		//    return result;
-		// } catch (Exception e) {
-		//    result.put("success",false);
-		//    result.put("result",null);
-		//    result.put("error",e.getMessage());
-		//    return result;
-		// }
+		JSONObject result = new JSONObject();
+		try {
+		   Object businessResult = doYourBusiness(input);
+		   result.put("success",true);
+		   result.put("result",businessResult);
+		   result.put("error","");
+		   return result;
+		} catch (Exception e) {
+		   result.put("success",false);
+		   result.put("result",null);
+		   result.put("error",e.getMessage());
+		   return result;
+		}
 
 		/**
 		 *示例2, 调用宜搭连接器
@@ -185,12 +146,45 @@ public class FaasEntry extends AbstractEntry {
 	 * @throws Exception
 	 */
 	private Object doYourBusiness(Map<String,Object> input) throws Exception{
-		//取实际的入参
-		String param1 = (String)input.get("参数1");
-		String param2 = (String)input.get("参数2");
-		String paramN = (String)input.get("参数N");
-		//业务处理
-		return "doYourBusiness成功";
+		//加解密业务逻辑	
+		String content = (String)input.get("content");
+		String password = (String)input.get("password");
+		Integer type = Integer.parseInt(String.valueOf(input.get("type")));
+		/**
+		*在这里编写您的业务代码, 也可以将业务代码封装到其他类或方法里.
+		*/
+		JSONObject result = new JSONObject();
+		result.put("success",false);
+		result.put("result","");
+		result.put("error","");
+		if (0 == type) {
+		/**
+		* 加密
+		*/
+		String encryptContent = DESUtil.encrypt(content, password);
+		System.out.println("加密后的字符串:" + encryptContent);
+		if (StringUtils.isEmpty(encryptContent)) {
+		result.put("error", "empty string got!");
+		return result;
+		}
+		result.put("result", encryptContent);
+		result.put("success", true);
+		}
+		else {
+		/**
+		* 解密
+		*/
+		String encryptContent = DESUtil.decrypt(content, password);
+		System.out.println("解密后的字符串:" + encryptContent);
+		if (StringUtils.isEmpty(encryptContent)) {
+		result.put("error", "empty string got!");
+		return result;
+		}
+		result.put("result", encryptContent);
+		result.put("success", true);
+		}
+		System.out.println("返回:" + JSON.toJSONString(result));
+		return result.get("result");
 	}
 
 	/**
