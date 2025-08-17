@@ -15,6 +15,8 @@ import com.alibaba.work.faas.util.DingOpenApiUtil;
 import com.alibaba.work.faas.util.YidaConnectorUtil;
 import com.alibaba.work.faas.util.YidaConnectorUtil.ConnectorTypeEnum;
 import com.aliyun.dingtalkyida_1_0.models.BatchSaveFormDataRequest;
+import com.alibaba.work.faas.util.DESUtil;
+
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,7 +43,48 @@ public class FaasEntry extends AbstractEntry {
 
 		//业务传的实际入参(如果您配置了参数映射(也就是点击了连接器工厂里的解析Body按钮并配置了各个参数描述和映射), 那么就是业务实际参数经过参数映射处理后的值)
 		Map<String,Object> input = faasInputs.getInputs();
-
+	
+		DESUtil desUtil = new DESUtil();
+		//加解密业务逻辑	
+		String content = (String)input.get("content");
+		String password = (String)input.get("password");
+		Integer type = Integer.parseInt(String.valueOf(input.get("type")));
+		/**
+		*在这里编写您的业务代码, 也可以将业务代码封装到其他类或方法里.
+		*/
+		JSONObject result = new JSONObject();
+		result.put("success",false);
+		result.put("result","");
+		result.put("error","");
+		if (0 == type) {
+		/**
+		* 加密
+		*/
+		String encryptContent = desUtil.encrypt(content, password);
+		System.out.println("加密后的字符串:" + encryptContent);
+		if (StringUtils.isEmpty(encryptContent)) {
+		result.put("error", "empty string got!");
+		return result;
+		}
+		result.put("result", encryptContent);
+		result.put("success", true);
+		}
+		else {
+		/**
+		* 解密
+		*/
+		String encryptContent = desUtil.decrypt(content, password);
+		System.out.println("解密后的字符串:" + encryptContent);
+		if (StringUtils.isEmpty(encryptContent)) {
+		result.put("error", "empty string got!");
+		return result;
+		}
+		result.put("result", encryptContent);
+		result.put("success", true);
+		}
+		System.out.println("返回:" + JSON.toJSONString(result));
+		return result;
+		
 		/**
 		 * 示例1, 在doYourBusiness方法里编写您的业务代码, 也可以将业务代码封装到其他Class源文件或方法里, cloudIDE和您的本地IDE基本无区别。
 		 */
@@ -96,12 +139,12 @@ public class FaasEntry extends AbstractEntry {
 		/**
 		 * 返回的JSONObject并不是一定要带success、result、error, 下面的代码只是示例, 具体返回哪些key-value由您自己决定, 尽量与您在宜搭连接器工厂里配置的出参结构保持一致即可
 		 */
-		JSONObject result = new JSONObject();
-		result.put("success",true);
-		result.put("result","恭喜您, 成功调用宜搭FASS连接器!");
-		result.put("error","");
+		// JSONObject result = new JSONObject();
+		// result.put("success",true);
+		// result.put("result","恭喜您, 成功调用宜搭FASS连接器!");
+		// result.put("error","");
 
-		return result;
+		// return result;
 	}
 
 	/**
